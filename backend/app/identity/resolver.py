@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from rapidfuzz import fuzz
-from app.core.normalization import input_kind, normalize_doi, normalize_issn, normalize_title, normalize_url
+from app.core.normalization import input_kind, normalize_doi, normalize_issn, normalize_title, normalize_url, valid_issn
 from app.db.models import Journal, JournalIdentifier
 from app.providers.crossref import CrossrefProvider
 
@@ -33,6 +33,8 @@ class IdentityResolver:
         kind = input_kind(raw)
         if kind == "issn":
             value = normalize_issn(raw) or raw
+            if not valid_issn(value):
+                return Resolution("invalid_issn", value, [], False)
             rows = self.db.query(JournalIdentifier).filter_by(scheme="ISSN", value=value).all()
             candidates = [self._candidate(self.db.get(Journal, row.journal_id), 1.0, "Exact ISSN match") for row in rows]
             return Resolution(kind, value, candidates, False)

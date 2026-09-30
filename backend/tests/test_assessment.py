@@ -30,3 +30,14 @@ def test_non_applicable_does_not_reduce_coverage() -> None:
 def test_repeated_provider_rows_do_not_inflate_coverage() -> None:
     result = assess([evidence(EvidenceState.VERIFIED), evidence(EvidenceState.VERIFIED)], identity_confident=True, applicable_checks=2)
     assert result.coverage == 0.5
+
+
+def test_source_attributed_predatory_list_flag_is_a_review_concern() -> None:
+    item = NormalizedEvidence(
+        "dgrsdt", "predatory_list", {"authority": "DGRSDT", "effective_year": 2025},
+        EvidenceState.VERIFIED, 1.0, "https://www.dgrsdt.dz/en/revues_predateur",
+    )
+    result = assess([item], identity_confident=True)
+    assert result.label == AssessmentLabel.SOME_CONCERNS
+    assert result.dimensions["source_list_flags"] == "listed"
+    assert "DGRSDT" in result.rationale[0]

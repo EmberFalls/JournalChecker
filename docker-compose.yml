@@ -18,6 +18,9 @@ services:
   backend:
     build: ./backend
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://journal:journal@postgres:5432/journal_integrity
+      REDIS_URL: redis://redis:6379/0
     ports: ["8000:8000"]
     depends_on:
       postgres: { condition: service_healthy }
@@ -30,4 +33,3 @@ services:
     depends_on: [backend]
 volumes:
   postgres_data:
-

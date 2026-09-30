@@ -3,9 +3,9 @@ import ipaddress
 import socket
 from collections import deque
 from dataclasses import dataclass
+from html.parser import HTMLParser as StdlibHTMLParser
 from urllib.parse import urljoin, urlsplit
 import httpx
-from selectolax.parser import HTMLParser
 from app.core.config import get_settings
 from app.core.normalization import normalize_url
 
@@ -44,6 +44,55 @@ class CrawledPage:
     title: str | None
     text: str
     content_hash: str
+
+
+@dataclass(frozen=True)
+class _Anchor:
+    attributes: dict[str, str | None]
+
+
+class _PageParser(StdlibHTMLParser):
+    """Small built-in HTML extractor, avoiding native parser DLL requirements."""
+
+    def __init__(self, content: bytes) -> None:
+        super().__init__(convert_charrefs=True)
+        self.body_parts: list[str] = []
+        self.title_parts: list[str] = []
+        self.anchors: list[_Anchor] = []
+        self._in_body = False
+        self._in_title = False
+        self.feed(content.decode("utf-8", errors="replace"))
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag = tag.lower()
+        if tag == "body":
+            self._in_body = True
+        elif tag == "title":
+            self._in_title = True
+        elif tag == "a":
+            self.anchors.append(_Anchor(dict(attrs)))
+
+    def handle_endtag(self, tag: str) -> None:
+        tag = tag.lower()
+        if tag == "body":
+            self._in_body = False
+        elif tag == "title":
+            self._in_title = False
+
+    def handle_data(self, data: str) -> None:
+        if self._in_body:
+            self.body_parts.append(data)
+        if self._in_title:
+            self.title_parts.append(data)
+
+    @property
+    def body_text(self) -> str:
+        return " ".join(" ".join(self.body_parts).split())
+
+    @property
+    def title_text(self) -> str | None:
+        title = " ".join(" ".join(self.title_parts).split())
+        return title or None
 
 
 class SafeCrawler:
@@ -102,13 +151,11 @@ class SafeCrawler:
                     final_url, content, _ = await self._fetch(client, requested)
                 except (httpx.HTTPError, UnsafeUrl):
                     continue  # Failure is deliberately not treated as missing policy evidence.
-                document = HTMLParser(content)
-                text = document.body.text(separator=" ", strip=True) if document.body else ""
-                title = document.css_first("title")
-                pages.append(CrawledPage(final_url, title.text(strip=True) if title else None, text, hashlib.sha256(content).hexdigest()))
+                document = _PageParser(content)
+                pages.append(CrawledPage(final_url, document.title_text, document.body_text, hashlib.sha256(content).hexdigest()))
                 if depth >= self.settings.crawl_max_depth:
                     continue
-                for anchor in document.css("a"):
+                for anchor in document.anchors:
                     href = anchor.attributes.get("href")
                     if not href:
                         continue

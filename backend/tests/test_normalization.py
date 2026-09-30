@@ -5,6 +5,13 @@ def test_issn_normalization_and_checksum() -> None:
     assert normalize_issn(" 2434 561X ") == "2434-561X"
     assert valid_issn("2434-561X")
     assert not valid_issn("2434-5611")
+    assert normalize_issn("ISSN: 2434 561X") == "2434-561X"
+    assert normalize_issn("eISSN 2434–561X") == "2434-561X"
+
+
+def test_known_bad_issn_examples_fail_checksum() -> None:
+    assert not valid_issn("1234-5678")
+    assert not valid_issn("1111-1111")
 
 
 def test_doi_normalization() -> None:

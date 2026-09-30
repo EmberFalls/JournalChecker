@@ -10,6 +10,9 @@ coverage/
 *.egg-info/
 data/*.csv
 data/*.xlsx
+data/*.zip
+server.out.log
+server.err.log
 
 backend/*.db
 backend/tests/*.db

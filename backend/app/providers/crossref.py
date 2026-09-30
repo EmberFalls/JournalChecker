@@ -48,13 +48,22 @@ class CrossrefProvider:
         return None
 
     @staticmethod
-    def _from_message(message: dict, url: str) -> list[NormalizedEvidence]:
+    def _from_message(message: dict, url: str, journal_record: bool = False) -> list[NormalizedEvidence]:
         issns = message.get("ISSN", [])
-        titles = message.get("container-title", []) or message.get("title", [])
+        if isinstance(issns, str):
+            issns = [issns]
+        titles = message.get("container-title", [])
+        if journal_record and not titles:
+            titles = message.get("title", [])
+        if isinstance(titles, str):
+            titles = [titles]
         publisher = message.get("publisher")
         result: list[NormalizedEvidence] = []
         if titles:
             result.append(NormalizedEvidence("crossref", "journal_title", {"title": titles[0]}, EvidenceState.VERIFIED, 0.78, url))
+        elif message.get("title"):
+            work_title = message["title"]
+            result.append(NormalizedEvidence("crossref", "work_title", {"title": work_title[0] if isinstance(work_title, list) else work_title}, EvidenceState.VERIFIED, 0.8, url))
         for issn in issns:
             result.append(NormalizedEvidence("crossref", "issn", {"issn": issn}, EvidenceState.VERIFIED, 0.9, url))
         if publisher:
@@ -73,6 +82,29 @@ class CrossrefProvider:
     async def lookup_issn(self, issn: str) -> list[NormalizedEvidence]:
         url = f"{self.base_url}/journals/{issn}"
         message = await self._get(f"/journals/{issn}")
-        return self._from_message(message, url) if message else [
+        return self._from_message(message, url, journal_record=True) if message else [
             NormalizedEvidence(self.name, "journal_metadata", {"issn": issn}, EvidenceState.NOT_OBSERVED, 0.7, url)
         ]
+
+    async def lookup_title(self, title: str) -> list[NormalizedEvidence]:
+        query = quote(title.strip(), safe="")
+        endpoint = f"/journals?query={query}&rows=20"
+        url = f"{self.base_url}{endpoint}"
+        message = await self._get(endpoint)
+        items = message.get("items", []) if isinstance(message, dict) else []
+        result: list[NormalizedEvidence] = []
+        for item in items if isinstance(items, list) else []:
+            if not isinstance(item, dict):
+                continue
+            titles = item.get("title", [])
+            title_value = titles[0] if isinstance(titles, list) and titles else title
+            item_url = item.get("resource", {}).get("primary", {}).get("URL") or url
+            result.append(NormalizedEvidence(
+                self.name, "journal_title", {"title": title_value}, EvidenceState.VERIFIED, 0.72, item_url
+            ))
+            for issn in item.get("ISSN", []) if isinstance(item.get("ISSN"), list) else []:
+                normalized = issn.strip()
+                result.append(NormalizedEvidence(
+                    self.name, "issn", {"issn": normalized}, EvidenceState.VERIFIED, 0.85, item_url
+                ))
+        return result

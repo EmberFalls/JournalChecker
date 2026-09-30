@@ -11,7 +11,10 @@ def normalize_whitespace(value: str) -> str:
 
 
 def normalize_issn(value: str) -> str | None:
-    match = ISSN_RE.match(value.strip().replace(" ", ""))
+    candidate = normalize_whitespace(value).strip()
+    candidate = re.sub(r"^(?:e?issn)\s*[:#]?\s*", "", candidate, flags=re.I)
+    candidate = candidate.replace("–", "-").replace("—", "-").replace("−", "-")
+    match = ISSN_RE.match(candidate.replace(" ", ""))
     if not match:
         return None
     return f"{match.group(1)}-{match.group(2).upper()}"

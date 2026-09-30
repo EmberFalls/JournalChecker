@@ -1,0 +1,25 @@
+{
+  "dataset_snapshot_date": "2026-09-17",
+  "real_listed": [
+    {"issn": "1580-0261", "title": "Keria: Studia Latina et Graeca", "expected_sources": ["doaj", "scopus"], "reference": "Public DOAJ CSV and official Scopus Source List snapshot"},
+    {"issn": "1932-6203", "title": "PLoS ONE", "expected_sources": ["doaj", "scopus"], "reference": "Public DOAJ CSV and official Scopus Source List snapshot"},
+    {"issn": "1314-6947", "title": "Nature Conservation", "expected_sources": ["doaj", "scopus"], "reference": "Public DOAJ CSV and official Scopus Source List snapshot"}
+  ],
+  "faulty_checksum": ["1234-5678", "2434-5611", "1111-1111"],
+  "valid_but_unlisted_in_fixture": ["8888-0001"],
+  "synthetic_negative": {"issn": "9999-0008", "title": "[SYNTHETIC DEMO] Journal of Rapid Discovery", "expected_assessment": "SOME_CONCERNS", "expected_claim_status": "CONTRADICTED"},
+  "authority_listed": [
+    {
+      "issn": "1009-6744",
+      "title": "Journal of Transportation Systems Engineering and Information Technology",
+      "authority": "Algerian DGRSDT",
+      "list_year": 2025,
+      "list_entry": 1590,
+      "list_name": "Actualisation des revues scientifiques predatrices (2025)",
+      "listed_urls": ["https://jtseit.com/", "https://www.jtseit-10096744.com/", "http://www.tseit.org.cn/CN/1009-6744/home.shtml"],
+      "source_url": "https://www.dgrsdt.dz/en/revues_predateur",
+      "expected_assessment": "SOME_CONCERNS",
+      "note": "The DGRSDT list names this title and these URLs. Report it as that authority's dated listing, not a universal verdict."
+    }
+  ]
+}
