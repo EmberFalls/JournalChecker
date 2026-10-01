@@ -27,28 +27,30 @@ export default function Hero({
   message,
 }: HeroProps) {
   return (
-    <section className="hero-section" id="hero-search" aria-label="Hero Search Section">
-      <div className="container" style={{ position: "relative", zIndex: 1 }}>
-        {/* Announcement Pill */}
-        <div className="hero-announcement">
-          <span className="hero-announcement-tag">Methodology Note</span>
-          <span>Conservative Evidence Scoring — No False Negatives</span>
-        </div>
-
+    <section
+      id="hero-search"
+      className="relative w-full min-h-[90vh] bg-[url('/hero-gradient-bg.jpg')] bg-cover bg-center bg-no-repeat pt-32 pb-24 px-4 text-center overflow-hidden flex flex-col items-center justify-center"
+      aria-label="Hero Search Section"
+    >
+      <div className="mx-auto max-w-4xl relative z-10 flex flex-col items-center">
         {/* Hero Title */}
-        <h1 className="hero-title">
-          Verify Scholarly Journal Authenticity with Traceable Evidence
+        <h1 className="text-4xl sm:text-6xl md:text-[64px] font-bold tracking-tight text-slate-900 leading-[1.08] mb-6 max-w-3xl">
+          Verify Scholarly Journals
+          <br />
+          <span className="text-slate-900">with Traceable Evidence</span>
         </h1>
 
         {/* Hero Subtitle */}
-        <p className="hero-subtitle">
-          Cross-reference published claims conservatively across DOAJ, Scopus, Web of Science, and Crossref. Absence of proof is never treated as misconduct.
+        <p className="text-base sm:text-lg md:text-xl text-slate-700 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+          Conservative risk scoring across DOAJ, Scopus, Web of Science, and Crossref. Absence of data is never treated as misconduct.
         </p>
 
-        {/* Segmented Mode Switcher */}
-        <ModeToggle mode={mode} onModeChange={onModeChange} />
+        {/* Mode Toggle Capsule */}
+        <div className="mb-6">
+          <ModeToggle mode={mode} onModeChange={onModeChange} />
+        </div>
 
-        {/* Search Capsule Input */}
+        {/* Search Capsule */}
         <SearchCapsule
           query={query}
           onQueryChange={onQueryChange}
@@ -58,8 +60,10 @@ export default function Hero({
           message={message}
         />
 
-        {/* Quick Test Samples */}
-        <QuickPills onSelect={onSelectSample} />
+        {/* Quick Sample Suggestions */}
+        <div className="mt-5">
+          <QuickPills onSelect={onSelectSample} />
+        </div>
       </div>
     </section>
   );

@@ -1,32 +1,32 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
+
 export default function FinalCta() {
   return (
-    <section className="final-cta-section" aria-label="Call to Action">
-      <div className="container">
-        <h2>Start Verifying Scholarly Channels with Confidence</h2>
-        <p>
-          Assess published journal claims with conservative risk scoring, transparent citations, and multi-registry corroboration.
+    <section className="py-24 px-4 bg-slate-900" aria-label="Call to Action">
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+          Start verifying scholarly journals
+        </h2>
+        <p className="mt-4 text-slate-400 text-base max-w-xl mx-auto">
+          Conservative risk scoring, transparent citations, and multi-registry corroboration — all in one place.
         </p>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "12px" }}>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a
             href="#hero-search"
-            className="btn-primary-pill"
-            style={{ padding: "12px 28px", fontSize: "15px" }}
+            className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-slate-900 hover:bg-slate-100 transition-colors"
           >
-            <span>Verify a Journal Now</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            Verify a journal
+            <ArrowRight className="h-4 w-4" />
           </a>
           <a
             href="http://localhost:8100/docs"
             target="_blank"
             rel="noreferrer"
-            className="btn-ghost-pill"
-            style={{ padding: "12px 24px", fontSize: "15px", background: "rgba(255, 255, 255, 0.1)", color: "#ffffff", borderColor: "rgba(255, 255, 255, 0.2)" }}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-700 px-6 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
           >
-            Explore API Documentation ↗
+            Explore API docs
           </a>
         </div>
       </div>

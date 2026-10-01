@@ -1,84 +1,55 @@
 "use client";
 
+import {
+  DoajLogo,
+  ScopusLogo,
+  WebOfScienceLogo,
+  CrossrefLogo,
+  ScimagoLogo,
+  DgrsdtLogo,
+  PubmedLogo,
+} from "./logos/AuthorityLogos";
+
 export default function LogoMarquee() {
   const authorities = [
-    {
-      name: "DOAJ",
-      desc: "Directory of Open Access Journals",
-      tag: "Public Index",
-    },
-    {
-      name: "Scopus",
-      desc: "Elsevier Serial Titles & Coverage",
-      tag: "Source List",
-    },
-    {
-      name: "Web of Science",
-      desc: "Clarivate Starter Journal API",
-      tag: "Starter Registry",
-    },
-    {
-      name: "Crossref",
-      desc: "DOI Registration Agency",
-      tag: "Metadata Registry",
-    },
-    {
-      name: "SCImago",
-      desc: "Journal & Country Rank (SJR)",
-      tag: "Metrics Import",
-    },
-    {
-      name: "DGRSDT",
-      desc: "Algerian Research Directorate",
-      tag: "Warning List",
-    },
+    { name: "DOAJ", desc: "Directory of Open Access Journals", Logo: DoajLogo },
+    { name: "Scopus", desc: "Elsevier Serial Titles", Logo: ScopusLogo },
+    { name: "Web of Science", desc: "Clarivate Citation Index", Logo: WebOfScienceLogo },
+    { name: "Crossref", desc: "DOI Registration Agency", Logo: CrossrefLogo },
+    { name: "SCImago", desc: "Journal Rank (SJR)", Logo: ScimagoLogo },
+    { name: "DGRSDT", desc: "Algerian Research Directorate", Logo: DgrsdtLogo },
+    { name: "PubMed", desc: "NCBI / NLM MEDLINE Database", Logo: PubmedLogo },
   ];
 
-  // Duplicate list for seamless infinite marquee loop
-  const duplicatedList = [...authorities, ...authorities];
+  const duplicated = [...authorities, ...authorities, ...authorities];
 
   return (
-    <section className="marquee-section" id="marquee" aria-label="Official Data Sources Marquee">
-      <div className="container">
-        <div className="marquee-header">
-          <span className="marquee-badge">6 Data Sources</span>
-          <span>Cross-referenced against verified scholarly registries & datasets</span>
-        </div>
+    <section id="authorities" className="border-y border-slate-100 bg-slate-50/60 py-8 overflow-hidden">
+      <div className="mx-auto max-w-5xl px-4 text-center mb-6">
+        <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+          Cross-referenced against official scholarly registries
+        </p>
       </div>
 
-      <div className="marquee-track-wrapper">
-        <div className="marquee-track" role="region" aria-label="Scrolling authorities">
-          {duplicatedList.map((auth, index) => (
-            <div key={`${auth.name}-${index}`} className="authority-item">
+      <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div className="animate-marquee gap-4">
+          {duplicated.map((item, idx) => {
+            const LogoComponent = item.Logo;
+            return (
               <div
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "8px",
-                  background: "#ffffff",
-                  border: "1px solid #e2e8f0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: 800,
-                  fontSize: "12px",
-                  color: "var(--brand-primary)",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                }}
+                key={`${item.name}-${idx}`}
+                className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 px-4 py-2.5 shadow-sm transition-all hover:shadow-md hover:border-slate-300 shrink-0"
               >
-                {auth.name.slice(0, 3)}
-              </div>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                  <span className="authority-name">{auth.name}</span>
-                  <span style={{ fontSize: "11px", color: "var(--brand-primary)", background: "var(--brand-50)", padding: "1px 6px", borderRadius: "4px", fontWeight: 600 }}>
-                    {auth.tag}
-                  </span>
+                <div className="flex h-9 w-9 items-center justify-center shrink-0">
+                  <LogoComponent className="h-8 w-8" />
                 </div>
-                <div className="authority-meta">{auth.desc}</div>
+                <div className="text-left">
+                  <div className="text-xs font-bold text-slate-900 leading-none">{item.name}</div>
+                  <div className="text-[10px] text-slate-500 mt-1 font-medium">{item.desc}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

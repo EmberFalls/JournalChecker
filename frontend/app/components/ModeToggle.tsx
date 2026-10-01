@@ -1,5 +1,8 @@
 "use client";
 
+import { Search, Globe } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 interface ModeToggleProps {
   mode: "identifier" | "website";
   onModeChange: (mode: "identifier" | "website") => void;
@@ -8,37 +11,39 @@ interface ModeToggleProps {
 export default function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
     <div
-      className="mode-toggle-group"
+      className="inline-flex items-center rounded-full bg-slate-900/90 p-1 backdrop-blur-sm shadow-sm"
       role="radiogroup"
-      aria-label="Verification Search Mode"
+      aria-label="Verification mode"
     >
       <button
         type="button"
         role="radio"
         aria-checked={mode === "identifier"}
-        className="mode-toggle-btn"
         onClick={() => onModeChange("identifier")}
+        className={cn(
+          "flex items-center gap-1.5 rounded-full px-5 py-2 text-xs sm:text-sm font-medium transition-all",
+          mode === "identifier"
+            ? "bg-white text-slate-900 shadow-sm"
+            : "text-slate-300 hover:text-white"
+        )}
       >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        Identifier (ISSN / DOI / Title)
+        <Search className="h-3.5 w-3.5" />
+        ISSN / DOI / Title
       </button>
-
       <button
         type="button"
         role="radio"
         aria-checked={mode === "website"}
-        className="mode-toggle-btn"
         onClick={() => onModeChange("website")}
+        className={cn(
+          "flex items-center gap-1.5 rounded-full px-5 py-2 text-xs sm:text-sm font-medium transition-all",
+          mode === "website"
+            ? "bg-white text-slate-900 shadow-sm"
+            : "text-slate-300 hover:text-white"
+        )}
       >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="10" />
-          <line x1="2" y1="12" x2="22" y2="12" />
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        </svg>
-        Journal Website Domain
+        <Globe className="h-3.5 w-3.5" />
+        Website Domain
       </button>
     </div>
   );
